@@ -1,0 +1,131 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+plt.style.use('default')
+# Speed of Linear Regression (scales change in parameters per iteration)
+alpha = 0.01
+# initializing parameters for guess
+# w is the slope of model
+w = 0
+# b is the y intercept of model
+b = 0
+
+# x_train is the input variable
+# y_train is the target
+x_train = np.array([1.0, 1.7, 2.0, 2.5, 3.0, 3.2, 5.2, 6, 12])
+y_train = np.array([250, 300, 480, 430, 630, 730, 1000, 1200, 3000])
+print(f"x_train = {x_train}")
+print(f"y_train = {y_train}")
+
+# m is the number of training examples
+m = len(x_train)
+print(f"Number of training examples is: {m}")
+
+
+def compute_model_output(x, w, b):
+    """
+    Computes the prediction of a linear model
+    Args:
+      x (ndarray (m,)): Data, m examples
+      w,b (scalar)    : model parameters
+    Returns
+      y (ndarray (m,)): target values
+    """
+    m = x.shape[0]
+    f_wb = np.zeros(m)
+    for i in range(m):
+        f_wb[i] = w * x[i] + b
+    return f_wb
+
+
+def w_err(w, b):
+    """
+            Computes the error for w parameter in linear model for a given data set
+            Args:
+              w,b (scalar)    : model parameters
+            Returns
+              total_error : how off the model is based off current w
+    """
+    total_err = 0
+    for i in range(m):
+        total_err += (w * x_train[i] + b - y_train[i]) * x_train[i]
+    total_err *= (1 / m)
+    print(f"total error for old w", {total_err})
+
+    return total_err
+
+
+def b_err(w, b):
+    """
+            Computes the error for b parameter in linear model for a given data set
+            Args:
+              w,b (scalar)    : model parameters
+            Returns
+              total_error : how off the model is based off current b
+    """
+    total_err = 0
+    for i in range(m):
+        total_err += (w * x_train[i] + b - y_train[i])
+    total_err *= (1 / m)
+    print(f"total error for old b", {total_err})
+    return total_err
+
+
+def sq_error(w, b):
+    """
+                Computes the error for linear model based off of data set
+                Args:
+                  w,b (scalar)    : model parameters
+                Returns
+                  total_error : how off the model is based off current b and w
+    """
+    total_err = 0
+    for i in range(m):
+        total_err += (w * x_train[i] + b - y_train[i]) ** 2
+    total_err *= (1 / (2 * m))
+    print(f"total error sq is", {total_err})
+    return total_err
+
+
+def update_params():
+    global w, b, alpha
+    tempw = w - alpha * w_err(w, b)
+    tempb = b - alpha * b_err(w, b)
+    w = tempw
+    b = tempb
+    print(f"new w", {tempw})
+    print(f"new b", {tempb})
+
+
+print(f"w: {w}")
+print(f"b: {b}")
+start_f_wb = compute_model_output(x_train, w, b)
+
+for p in range(100):
+    update_params()
+    sq_error(w, b)
+    print(p)
+    if (p == 0):
+        tmp1_f_wb = compute_model_output(x_train, w, b)
+    if (p == 4):
+        tmp2_f_wb = compute_model_output(x_train, w, b)
+
+fin_f_wb = compute_model_output(x_train, w, b)
+
+# Plot our model prediction
+plt.plot(x_train, tmp1_f_wb, c='r', label='Our first guess')
+plt.plot(x_train, tmp2_f_wb, c='g', label='Our 5th guess')
+plt.plot(x_train, fin_f_wb, c='b', label='Our last guess')
+plt.plot(x_train, start_f_wb, c='y', label='Our start')
+
+
+# Plot the data points
+plt.scatter(x_train, y_train, marker='x', c='r', label='Actual Values')
+# Set the title
+plt.title("Housing Prices")
+# Set the y-axis label
+plt.ylabel('Price (in 1000s of dollars)')
+# Set the x-axis label
+plt.xlabel('Size (1000 sqft)')
+plt.legend()
+plt.show()
