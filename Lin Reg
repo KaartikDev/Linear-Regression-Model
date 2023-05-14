@@ -112,7 +112,7 @@ start_f_wb = compute_model_output(x_train, w, b)
 for p in range(n):
     update_params()
     sq_error(w, b)
-    print(p)
+    print(f"Current iteration {p}")
     if (p == 0):
         tmp1_f_wb = compute_model_output(x_train, w, b)
     if (p == 4):
