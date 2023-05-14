@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
 plt.style.use('default')
 # Speed of Linear Regression (scales change in parameters per iteration)
 alpha = 0.01
@@ -9,7 +8,8 @@ alpha = 0.01
 w = 0
 # b is the y intercept of model
 b = 0
-
+# number of times gradient descent is performed
+n = 100
 # x_train is the input variable
 # y_train is the target
 x_train = np.array([1.0, 1.7, 2.0, 2.5, 3.0, 3.2, 5.2, 6, 12])
@@ -44,15 +44,15 @@ def w_err(w, b):
             Args:
               w,b (scalar)    : model parameters
             Returns
-              total_error : how off the model is based off current w
+              error : how off the model is based off current w
     """
-    total_err = 0
+    error = 0
     for i in range(m):
-        total_err += (w * x_train[i] + b - y_train[i]) * x_train[i]
-    total_err *= (1 / m)
-    print(f"total error for old w", {total_err})
+        error += (w * x_train[i] + b - y_train[i]) * x_train[i]
+    error *= (1 / m)
+    print(f"total error for old w", {error})
 
-    return total_err
+    return error
 
 
 def b_err(w, b):
@@ -61,14 +61,14 @@ def b_err(w, b):
             Args:
               w,b (scalar)    : model parameters
             Returns
-              total_error : how off the model is based off current b
+              error : how off the model is based off current b
     """
-    total_err = 0
+    error = 0
     for i in range(m):
-        total_err += (w * x_train[i] + b - y_train[i])
-    total_err *= (1 / m)
-    print(f"total error for old b", {total_err})
-    return total_err
+        error += (w * x_train[i] + b - y_train[i])
+    error *= (1 / m)
+    print(f"total error for old b", {error})
+    return error
 
 
 def sq_error(w, b):
@@ -88,6 +88,10 @@ def sq_error(w, b):
 
 
 def update_params():
+    """
+                Calculates and updates slighlty more accurate parameters w,b based
+                off error calculated
+    """
     global w, b, alpha
     tempw = w - alpha * w_err(w, b)
     tempb = b - alpha * b_err(w, b)
@@ -99,9 +103,13 @@ def update_params():
 
 print(f"w: {w}")
 print(f"b: {b}")
+
+#Initial line based off of w,b
 start_f_wb = compute_model_output(x_train, w, b)
 
-for p in range(100):
+
+#perform gradient descent n times
+for p in range(n):
     update_params()
     sq_error(w, b)
     print(p)
@@ -117,7 +125,6 @@ plt.plot(x_train, tmp1_f_wb, c='r', label='Our first guess')
 plt.plot(x_train, tmp2_f_wb, c='g', label='Our 5th guess')
 plt.plot(x_train, fin_f_wb, c='b', label='Our last guess')
 plt.plot(x_train, start_f_wb, c='y', label='Our start')
-
 
 # Plot the data points
 plt.scatter(x_train, y_train, marker='x', c='r', label='Actual Values')
