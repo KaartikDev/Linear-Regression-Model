@@ -3,3 +3,5 @@ Early Dive into supervised machine learning(Based off of Supervised Machine Lear
 
 Estimates the line of best fit for a given data set (with one feature) through gradient descent.  
 Makes use of matplot to display models and numpy to handle arrays. 
+
+Note: Data set was chosen at random
